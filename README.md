@@ -10,7 +10,7 @@ Flask反向代理ChatGPT网站，完美复刻chat.openai.com/chat
 ## 安装依赖
 
 ``` bash
-pip install requests flask
+pip install requests flask gevent
 ```
 
 ## 快速开始
