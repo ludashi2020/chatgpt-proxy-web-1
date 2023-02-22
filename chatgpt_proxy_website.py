@@ -12,6 +12,11 @@ from urllib.parse import unquote
 from flask import Flask, request, redirect, send_file, Response, stream_with_context
 from werkzeug.routing import BaseConverter
 
+# 使用gevent异步框架运行，flask自带运行太卡了
+from gevent.pywsgi import WSGIServer
+from gevent import monkey
+monkey.patch_all()
+
 proxies = {"https": ""}
 
 # 定义Cookie参数
@@ -101,5 +106,6 @@ def index(uri):
         return r.content.replace(b'https://chat.openai.com', b'http://127.0.0.1:8011')
 
 if __name__ == "__main__":
-    app.run(port=8011, threaded=True)
+    # app.run(port=8011, threaded=True)
+    WSGIServer(("127.0.0.1", 8012), app).serve_forever()
     # 在浏览器打开: http://127.0.0.1:8011/chat
