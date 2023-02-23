@@ -19,6 +19,9 @@ monkey.patch_all()
 
 proxies = {"https": ""}
 
+# 定义user_id
+user_id = ""
+
 # 定义Cookie参数
 # 需要在cookie获取以下三个参数，_puid为plus会员专属，没它不行
 _puid = ""
@@ -74,12 +77,42 @@ cookie_dict = {cookie.split("=")[0]: cookie.split("=")[1] for cookie in headers[
 resource_dir = './resource'
 os.makedirs(resource_dir, exist_ok=True)
 
+# 定义登录请求和设置cookie
+with open('login.html', 'r', encoding='utf-8') as f:
+    login_html = f.read()
+with open('login_failed.html', 'r', encoding='utf-8') as f:
+    login_failed_html = f.read()
+
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.cookies.get("accessToken")  == user_id:
+        return redirect('/chat',302)
+    if request.method =='GET':
+        return login_html
+    username = request.form['username']
+    password = request.form['password']
+    # user_id加密过程
+    uid = md5((username+password).encode()).hexdigest()
+    if uid == user_id:
+        resp = make_response(redirect('/chat',302))
+        resp.set_cookie("accessToken", uid, max_age=604800)
+        return resp
+    else:
+        return login_failed_html
+
 # 处理所有的 HTTP 请求方法
 @app.route('/<path:uri>', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'TRACE', 'CONNECT', 'PATCH'])
 def index(uri):
+    # 验证cookie
+    if user_id and request.cookies.get("accessToken") != user_id:
+        return redirect("/", 302)
+    # 注销
+    if 'auth/signout' in uri:
+        resp = make_response('{"url":"/"}'.encode())
+        resp.delete_cookie("accessToken")
+        return resp
     param = '&'.join([f'{i}={j}' for i,j in request.args.items()])
     url = f"https://chat.openai.com/{uri}?{param}" if param else f"https://chat.openai.com/{uri}"
-
     # 如果请求的是静态资源，优先从本地获取，否则从远程获取
     if any(x in url for x in ('.jpg', '.png', '.ico', '.woff', '.otf', '.css')):
         ext = url.split('.')[-1]
