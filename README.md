@@ -27,6 +27,10 @@ pip install requests flask gevent
   http://127.0.0.1:8011/chat
   ```
 
+## 登录认证
+
+在代码页设置user_id即可开启登录认证，user_id为邮箱+密码的md5
+
 ## 注意事项
 
 1. 只能用于Plus会员账号使用，免费账号没有_puid参数会有CF验证。
