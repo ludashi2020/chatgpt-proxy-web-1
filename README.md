@@ -37,4 +37,5 @@ pip install requests flask gevent
 2. 目前登陆上的账号不需要翻墙也能正常使用。
 
 ## 效果图
+![login](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/login.png)
 ![demo](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/demo.png)
