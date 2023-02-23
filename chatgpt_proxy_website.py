@@ -140,5 +140,5 @@ def index(uri):
 
 if __name__ == "__main__":
     # app.run(port=8011, threaded=True)
-    WSGIServer(("127.0.0.1", 8012), app).serve_forever()
+    WSGIServer(("127.0.0.1", 8011), app).serve_forever()
     # 在浏览器打开: http://127.0.0.1:8011/chat
