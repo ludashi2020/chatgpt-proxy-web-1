@@ -9,7 +9,7 @@ import os
 import requests
 from hashlib import md5
 from urllib.parse import unquote
-from flask import Flask, request, redirect, send_file, Response, stream_with_context
+from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response
 from werkzeug.routing import BaseConverter
 
 # 使用gevent异步框架运行，flask自带运行太卡了
