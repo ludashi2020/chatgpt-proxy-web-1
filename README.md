@@ -38,4 +38,4 @@ pip install requests flask gevent
 
 ## 效果图
 ![login](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/login.png)
-![demo](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/demo.png)
+![chat](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/chat.png)
