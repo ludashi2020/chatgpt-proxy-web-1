@@ -19,7 +19,8 @@ monkey.patch_all()
 
 proxies = {"https": ""}
 
-# 定义user_id
+# 定义user_id 以test@qq.com 123456为例
+# user_id = md5(('test@qq.com123456').encode()).hexdigest()
 user_id = ""
 
 # 定义Cookie参数
