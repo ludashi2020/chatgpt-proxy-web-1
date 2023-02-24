@@ -31,6 +31,11 @@ pip install requests flask gevent
 
 在代码页设置user_id即可开启登录认证，user_id为邮箱+密码的md5
 
+``` python3
+# 定义user_id 以test@qq.com 123456为例
+user_id = md5(('test@qq.com123456').encode()).hexdigest()
+```
+
 ## 注意事项
 
 1. 只能用于Plus会员账号使用，免费账号没有_puid参数会有CF验证。
