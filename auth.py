@@ -16,8 +16,17 @@ cookies = {}
 
 session = requests.Session()
 
-def get_csrf_token(_puid):
+def get_login_cookie(_puid):
     cookies["_puid"] = _puid
+    r = session.get("https://chat.openai.com/auth/login?next=/chat", headers=headers, cookies=cookies, proxies=proxies)
+    cookies.update(r.cookies)
+    cookies.update(session.cookies)
+    headers["cookie"] = '; '.join([f'{k}={v}' for k,v in cookies.items()])
+    r = session.get("https://chat.openai.com/api/auth/providers", headers=headers, cookies=cookies, proxies=proxies)
+    cookies.update(r.cookies)
+    cookies.update(session.cookies)
+
+def get_csrf_token():
     url = "https://chat.openai.com/api/auth/csrf"
     headers["cookie"] = '; '.join([f'{k}={v}' for k,v in cookies.items()])
     r = session.get(url, headers=headers, cookies=cookies, proxies=proxies)
@@ -97,7 +106,9 @@ def get_resume_state(password_url, email_address, password):
     cookies.update(session.cookies)
 
 def get_cookies(_puid, email_address, password):
-    csrf_token = get_csrf_token(_puid)
+    get_login_cookie(_puid)
+    time.sleep(1)
+    csrf_token = get_csrf_token()
     time.sleep(1)
     authrize_url = get_authrize_url(csrf_token)
     time.sleep(1)
@@ -106,6 +117,7 @@ def get_cookies(_puid, email_address, password):
     password_url = get_password_url(identifier_url, email_address)
     time.sleep(1)
     get_resume_state(password_url, email_address, password)
+    print(email_address, 'login successful.')
     return cookies
 
 
