@@ -70,6 +70,7 @@ def get_authorization():
     """get accessToken"""
     url = "https://chat.openai.com/api/auth/session"
     r = requests.get(url, headers=headers, proxies=proxies)
+    print(r.json()['user']['email'], 'get accesstoken successful.')
     authorization = r.json()["accessToken"]
     return "Bearer "+authorization
 
