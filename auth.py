@@ -97,9 +97,7 @@ def get_resume_state(password_url, email_address, password):
     cookies.update(session.cookies)
 
 def get_cookies(_puid, email_address, password):
-    get_login_cookie(_puid)
-    time.sleep(1)
-    csrf_token = get_csrf_token()
+    csrf_token = get_csrf_token(_puid)
     time.sleep(1)
     authrize_url = get_authrize_url(csrf_token)
     time.sleep(1)
