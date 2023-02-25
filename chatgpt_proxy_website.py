@@ -39,6 +39,10 @@ session_token = ""
 # cf_learance must needed if you are free acount.
 cf_clearance = ""
 
+# listen_url can be change if needed.
+listen_url = "http://127.0.0.1:8011"
+
+
 # Login and get cookie_dict
 cookie_dict = get_cookies(_puid, email_address, password) \
               if email_address and password \
@@ -129,31 +133,50 @@ def index(uri):
     param = '&'.join([f'{i}={j}' for i,j in request.args.items()])
     url = f"https://chat.openai.com/{uri}?{param}" if param else f"https://chat.openai.com/{uri}"
     # If the request is a static resource, otherwise get it from the remote
-    if any(x in url for x in ('.jpg', '.png', '.ico', '.woff', '.otf', '.css')):
+    if any(x in url for x in ('.jpg', '.png', '.ico', '.woff', '.otf', '.css', '.js')):
         ext = url.split('.')[-1]
         filename = md5(url.encode('utf-8')).hexdigest()
         filepath = os.path.join(resource_dir, f'{filename}.{ext}')
         if os.path.isfile(filepath):
             return send_file(filepath)
         else:
-            r = requests.get(url, headers=headers, cookies=cookie_dict)
+            r = requests.get(url, headers=headers, cookies=cookie_dict, data=request.data, proxies=proxies)
+            if '.js' in url or '.css' in url:
+                content = r.content.replace(b'https://chat.openai.com', listen_url.encode())
+            else:
+                content = r.content
             with open(filepath, 'wb') as f:
-                f.write(r.content)
+                f.write(content)
             return send_file(filepath)
+    # cache page html
+    elif '/backend' not in url and '.' not in url:
+        filename = md5(url.encode('utf-8')).hexdigest()
+        filepath = os.path.join(resource_dir, f'{filename}')
+        if os.path.isfile(filepath):
+            return send_file(filepath)
+        else:
+            r = requests.get(url, headers=headers, cookies=cookie_dict, data=request.data, proxies=proxies)
+            content = r.content.replace(b'https://chat.openai.com', listen_url.encode())
+            with open(filepath, 'wb') as f:
+                f.write(content)
+            return send_file(filepath)
+    # stream request
     elif 'conversation' in url:
         # If a live conversation is requested, the response is streamed
         r = requests.request(request.method, url, headers=headers, cookies=cookie_dict, data=request.data, proxies=proxies, stream=True)
         response = Response(stream_with_context(r.iter_content(chunk_size=1024)))
         response.headers['content-type'] = r.headers.get('content-type')
         return response
+    # backend api request
     else:
         headers['cookie'] = '; '.join([f'{k}={v}' for k,v in cookie_dict.items()])
         r = requests.request(request.method, url, headers=headers, cookies=cookie_dict, data=request.data, proxies=proxies)
         cookie_dict.update(r.cookies)
-        # replace http://127.0.0.1:8011 if needed.
-        return r.content.replace(b'https://chat.openai.com', b'http://127.0.0.1:8011')
+        return r.content.replace(b'https://chat.openai.com', listen_url.encode())
 
 if __name__ == "__main__":
-    app.run(port=8011, threaded=True)
-    # WSGIServer(("127.0.0.1", 8011), app).serve_forever()
+    host = listen_url.split('//')[1].split(':')[0]
+    port = int(listen_url.split(':')[1]) if ':' in listen_url else 80
+    app.run(host=host, port=port, threaded=True)
+    # WSGIServer((host, port), app).serve_forever()
     # open in browser: http://127.0.0.1:8011/chat
