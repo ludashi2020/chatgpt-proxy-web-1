@@ -1,46 +1,58 @@
 # chatgpt_plus_proxy_website
-Flask反向代理ChatGPT网站，完美复刻chat.openai.com/chat ,已加入登录验证，原汁原味。
+Flask reverse proxy ChatGPT website chat.openai.com/chat.
 
-## 准备
+## Prepare
 
-你应该先登录[ChatGPT Website](https://chat.openai.com/chat)，找到名为`cf_clearance`、`__Secure-next-auth.session-token`、`_puid`的Cookies，复制它们的值。
+You should first login to [ChatGPT Website](https://chat.openai.com/chat), find the cookies named `_puid`, and copy their values.
 
-其中`_puid`为Plus会员专属值，没它不行。
+**This project relies heavily on the `_puid` parameter. Without it, CloudFare cannot be bypassed.**
 
-## 安装依赖
-
-``` bash
-pip install requests flask gevent
+``` python
+# Must and Required parameter.
+_puid = ""
 ```
 
-## 快速开始
+Now you can use the chatgpt mailbox password to automatically log in to get session_token.
 
-1. 在`chatgpt.py`代码相应位置粘贴`cf_clearance`、`session_token`、`_puid`的值。
+``` python3
+# ChatGPT account password login without session_token if needed.
+email_address = ""
+password = ""
+```
 
-2. 运行程序
+If you login with Google or Microsoft, you can only get another `__Secure-next-auth.session-token` parameter.
+
+``` python
+# session_token login without chatgpt account if needed.
+session_token = ""
+```
+
+Now you can add password verification to your webpage, leave it blank for no verification.
+
+``` python
+# Password can be added if needed. example:  md5(('test@qq.com123456').encode()).hexdigest()
+user_id = ""
+```
+
+## Install dependencies
+
+``` bash
+pip install -r requirements.txt
+```
+
+## Quick start
+
   ``` bash
   python3 chatgpt_proxy_website.py
   ```
 
-3. 浏览器打开
-  ``` plain Text
-  http://127.0.0.1:8011/chat
-  ```
+browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 
-## 登录认证
+## Note
 
-在代码页设置user_id即可开启登录认证，user_id为邮箱+密码的md5
+1. It can only be used for Plus member accounts, free accounts without _puid parameters will have CF verification.
+2. The account currently logged in can be used normally without overpassing the wall. In China。
 
-``` python3
-# 定义user_id 以test@qq.com 123456为例
-user_id = md5(('test@qq.com123456').encode()).hexdigest()
-```
-
-## 注意事项
-
-1. 只能用于Plus会员账号使用，免费账号没有_puid参数会有CF验证。
-2. 目前登陆上的账号不需要翻墙也能正常使用。
-
-## 效果图
+## Renderings
 ![login](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/login.png)
 ![chat](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/chat.png)
