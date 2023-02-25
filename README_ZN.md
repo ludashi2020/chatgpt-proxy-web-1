@@ -52,8 +52,10 @@ python3 chatgpt_proxy_website.py
 ## 注意事项
 
 1. 只能用于Plus会员账号，免费账号不带_puid参数会有CF验证。
+
 2、当前登录的账号无需翻墙即可正常使用。 在中国。
 
 ## 效果图
 ![登录](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/login.png)
+
 ![聊天](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/chat.png)
