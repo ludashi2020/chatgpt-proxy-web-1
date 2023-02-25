@@ -150,7 +150,7 @@ def index(uri):
                 f.write(content)
             return send_file(filepath)
     # cache page html
-    elif '/backend' not in url and '.' not in url:
+    elif '/backend' not in url and '/cdn-cgi' not in url and '.' not in url:
         filename = md5(url.encode('utf-8')).hexdigest()
         filepath = os.path.join(resource_dir, f'{filename}')
         if os.path.isfile(filepath):
