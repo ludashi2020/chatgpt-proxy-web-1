@@ -1,6 +1,8 @@
 # chatgpt_plus_proxy_website
 Flask reverse proxy ChatGPT website chat.openai.com/chat.
 
+[中文说明](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/README_ZN.md)
+
 ## Prepare
 
 You should first login to [ChatGPT Website](https://chat.openai.com/chat), find the cookies named `_puid`, and copy their values.
@@ -42,9 +44,9 @@ pip install -r requirements.txt
 
 ## Quick start
 
-  ``` bash
-  python3 chatgpt_proxy_website.py
-  ```
+``` bash
+python3 chatgpt_proxy_website.py
+```
 
 browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 
