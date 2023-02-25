@@ -177,7 +177,7 @@ def index(uri):
 
 if __name__ == "__main__":
     host = listen_url.split('//')[1].split(':')[0]
-    port = int(listen_url.split(':')[1]) if ':' in listen_url else 80
+    port = int(listen_url.split(':')[-1]) if ':' in listen_url.split('//')[1] else 80
     app.run(host=host, port=port, threaded=True)
     # WSGIServer((host, port), app).serve_forever()
     # open in browser: http://127.0.0.1:8011/chat
