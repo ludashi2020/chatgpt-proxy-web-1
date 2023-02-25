@@ -117,7 +117,7 @@ def get_cookies(_puid, email_address, password):
     password_url = get_password_url(identifier_url, email_address)
     time.sleep(1)
     get_resume_state(password_url, email_address, password)
-    print(email_address, 'login successful.')
+    print(email_address, 'get session_token successful.')
     return cookies
 
 
