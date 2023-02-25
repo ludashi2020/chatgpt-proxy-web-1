@@ -176,7 +176,7 @@ def index(uri):
         return r.content.replace(b'https://chat.openai.com', listen_url.encode())
 
 if __name__ == "__main__":
-    host = listen_url.split('//')[1].split(':')[0]
+    host = '0.0.0.0' if '127.0.0.1' not in listen_url else '127.0.0.1'
     port = int(listen_url.split(':')[-1]) if ':' in listen_url.split('//')[1] else 80
     app.run(host=host, port=port, threaded=True)
     # WSGIServer((host, port), app).serve_forever()
