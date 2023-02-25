@@ -35,7 +35,6 @@ def get_csrf_token():
     csrf_token = r.json()["csrfToken"]
     return csrf_token
 
-
 def get_authrize_url(csrf_token):
     url = "https://chat.openai.com/api/auth/signin/auth0?prompt=login"
     payload=f'callbackUrl=%2Fchat&csrfToken={csrf_token}&json=true'
@@ -107,22 +106,16 @@ def get_resume_state(password_url, email_address, password):
     cookies.update(session.cookies)
 
 def get_cookies(_puid, email_address, password):
-    # 第一步
     get_login_cookie(_puid)
     time.sleep(1)
-    # 第二步
     csrf_token = get_csrf_token()
     time.sleep(1)
-    # 第三步
     authrize_url = get_authrize_url(csrf_token)
     time.sleep(1)
-    # 第四步
     identifier_url = get_identifier_url(authrize_url)
     time.sleep(1)
-    # 第五步
     password_url = get_password_url(identifier_url, email_address)
     time.sleep(1)
-    # 第六步
     get_resume_state(password_url, email_address, password)
     return cookies
 
