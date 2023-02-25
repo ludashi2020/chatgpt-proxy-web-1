@@ -16,17 +16,8 @@ cookies = {}
 
 session = requests.Session()
 
-def get_login_cookie(_puid):
+def get_csrf_token(_puid):
     cookies["_puid"] = _puid
-    r = session.get("https://chat.openai.com/auth/login?token=d0449e1ec94ef1b00d1873f5328f1ef06da6fec5a30c1cd9e132bd63d2d37b13", headers=headers, cookies=cookies, proxies=proxies)
-    cookies.update(r.cookies)
-    cookies.update(session.cookies)
-    headers["cookie"] = '; '.join([f'{k}={v}' for k,v in cookies.items()])
-    r = session.get("https://chat.openai.com/api/auth/providers", headers=headers, cookies=cookies, proxies=proxies)
-    cookies.update(r.cookies)
-    cookies.update(session.cookies)
-
-def get_csrf_token():
     url = "https://chat.openai.com/api/auth/csrf"
     headers["cookie"] = '; '.join([f'{k}={v}' for k,v in cookies.items()])
     r = session.get(url, headers=headers, cookies=cookies, proxies=proxies)
