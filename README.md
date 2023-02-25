@@ -7,7 +7,7 @@ Flask reverse proxy ChatGPT website chat.openai.com/chat.
 
 You should first login to [ChatGPT Website](https://chat.openai.com/chat), find the cookies named `_puid`, and copy their values.
 
-**This project relies heavily on the `_puid` parameter. Without it, CloudFare cannot be bypassed.**
+**This project relies heavily on the exclusively for Plus `_puid` parameter. Without it, CloudFare cannot be bypassed.**
 
 ``` python
 # Must and Required parameter.
