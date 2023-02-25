@@ -36,10 +36,15 @@ password = ""
 # session_token login without chatgpt account if needed.
 session_token = ""
 
+# cf_learance must needed if you are free acount.
+cf_clearance = ""
+
 # Login and get cookie_dict
 cookie_dict = get_cookies(_puid, email_address, password) \
               if email_address and password \
               else {"_puid":_puid, "__Secure-next-auth.session-token":session_token}
+if cf_clearance:
+    cookie_dict['cf_clearance'] = cf_clearance
 cookie = '; '.join([f'{k}={v}' for k,v in cookie_dict.items()])
 
 headers = {
