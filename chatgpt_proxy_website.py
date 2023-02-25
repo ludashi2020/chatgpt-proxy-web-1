@@ -36,9 +36,6 @@ password = ""
 # session_token login without chatgpt account if needed.
 session_token = ""
 
-# cf_learance must needed if you are free acount.
-cf_clearance = ""
-
 # listen_url can be change if needed.
 # if you change this, you should delete static resource.
 listen_url = "http://127.0.0.1:8011"
@@ -48,8 +45,6 @@ listen_url = "http://127.0.0.1:8011"
 cookie_dict = get_cookies(_puid, email_address, password) \
               if email_address and password \
               else {"_puid":_puid, "__Secure-next-auth.session-token":session_token}
-if cf_clearance:
-    cookie_dict['cf_clearance'] = cf_clearance
 cookie = '; '.join([f'{k}={v}' for k,v in cookie_dict.items()])
 
 headers = {
