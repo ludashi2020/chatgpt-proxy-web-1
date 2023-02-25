@@ -2,7 +2,7 @@
 
 Flask 反向代理 ChatGPT 网站 chat.openai.com/chat
 
-＃＃ 准备
+## 准备
 
 您应该先登录[ChatGPT Website](https://chat.openai.com/chat)，找到名为`_puid`的cookie，并复制它们的值。
 
