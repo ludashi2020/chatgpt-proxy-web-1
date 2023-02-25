@@ -40,6 +40,7 @@ session_token = ""
 cf_clearance = ""
 
 # listen_url can be change if needed.
+# if you change this, you should delete static resource.
 listen_url = "http://127.0.0.1:8011"
 
 
