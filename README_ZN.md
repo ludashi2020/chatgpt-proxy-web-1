@@ -49,7 +49,7 @@ python3 chatgpt_proxy_website.py
 
 浏览器打开链接：[http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 
-## 注意事项
+## 注意事项 
 
 1. 只能用于Plus会员账号，免费账号不带_puid参数会有CF验证。
 
