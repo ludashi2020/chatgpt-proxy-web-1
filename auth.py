@@ -16,6 +16,14 @@ cookies = {}
 
 session = requests.Session()
 
+def get_authorization(headers, cookies):
+    """get accessToken"""
+    url = "https://chat.openai.com/api/auth/session"
+    r = requests.get(url, headers=headers, cookies=cookies, proxies=proxies)
+    print(r.json()['user']['email'], 'get accesstoken successful.')
+    authorization = r.json()["accessToken"]
+    return "Bearer "+authorization
+
 def get_login_cookie(_puid):
     cookies["_puid"] = _puid
     r = session.get("https://chat.openai.com/auth/login?next=/chat", headers=headers, cookies=cookies, proxies=proxies)
