@@ -8,7 +8,6 @@ Date：2023-02-22
 import os
 import requests
 from hashlib import md5
-from auth import get_cookies, get_authorization
 from urllib.parse import unquote
 from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response
 from werkzeug.routing import BaseConverter
@@ -29,12 +28,9 @@ _puid = ""
 # Password can be added if needed. example:  md5(('test@qq.com123456').encode()).hexdigest()
 user_id = ""
 
-# ChatGPT account password login without session_token if needed.
-email_address = ""
-password = ""
-
-# session_token login without chatgpt account if needed.
+# session_token and cf_clearance, get rtom cookies.
 session_token = ""
+cf_clearance = ""
 
 # listen_url can be change if needed.
 # if you change this, you should delete static resource.
@@ -42,9 +38,11 @@ listen_url = "http://127.0.0.1:8011"
 
 
 # Login and get cookie_dict
-cookie_dict = get_cookies(_puid, email_address, password) \
-              if email_address and password \
-              else {"_puid":_puid, "__Secure-next-auth.session-token":session_token}
+cookie_dict = {
+    "_puid":_puid, 
+    "__Secure-next-auth.session-token":session_token,
+    "cf_clearance": cf_clearance
+}
 cookie = '; '.join([f'{k}={v}' for k,v in cookie_dict.items()])
 
 headers = {
@@ -67,6 +65,14 @@ headers = {
 }
 
 # set accessToken
+def get_authorization():
+    """get accessToken"""
+    url = "https://chat.openai.com/api/auth/session"
+    r = requests.get(url, headers=headers, cookies=cookie_dict, proxies=proxies)
+    print(r.json()['user']['email'], 'get accesstoken successful.')
+    authorization = r.json()["accessToken"]
+    return "Bearer "+authorization
+
 headers["authorization"] = get_authorization(headers, cookie_dict)
 
 app = Flask(__name__)
