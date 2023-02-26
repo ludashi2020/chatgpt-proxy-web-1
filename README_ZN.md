@@ -4,29 +4,20 @@ Flask 反向代理 ChatGPT 网站 chat.openai.com/chat
 
 ## 准备
 
-您应该先登录[ChatGPT Website](https://chat.openai.com/chat)，找到名为`_puid`的cookie，并复制它们的值。
+您应该先登录[ChatGPT Website](https://chat.openai.com/chat)，找到名为`_puid` `__Secure-next-auth.session-token` `cf_clearance`的cookie，并复制它们的值。
 
 **本项目严重依赖Plus会员专属 `_puid` 参数。 没有它，就无法绕过 CloudFare。**
 
 ``` python
 # Must and Required parameter.
 _puid = ""
-```
 
-现在可以使用chatgpt邮箱密码自动登录获取session_token。
-
-``` python3
-# ChatGPT account password login without session_token if needed.
-email_address = ""
-password = ""
-```
-
-如果您使用 Google 或 Microsoft 登录，则只能获取另一个 `__Secure-next-auth.session-token` 参数。
-
-``` python
-# session_token login without chatgpt account if needed.
+# session_token and cf_clearance
 session_token = ""
+cf_clearance = ""
 ```
+
+~~现在可以使用chatgpt邮箱密码自动登录获取session_token。~~(还不稳定）
 
 现在您可以在您的网页中添加密码验证，留空表示不验证。
 
