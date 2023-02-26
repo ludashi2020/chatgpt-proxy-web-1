@@ -8,7 +8,7 @@ Date：2023-02-22
 import os
 import requests
 from hashlib import md5
-from auth import get_cookies
+from auth import get_cookies, get_authorization
 from urllib.parse import unquote
 from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response
 from werkzeug.routing import BaseConverter
@@ -66,16 +66,8 @@ headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
 }
 
-def get_authorization():
-    """get accessToken"""
-    url = "https://chat.openai.com/api/auth/session"
-    r = requests.get(url, headers=headers, proxies=proxies)
-    print(r.json()['user']['email'], 'get accesstoken successful.')
-    authorization = r.json()["accessToken"]
-    return "Bearer "+authorization
-
 # set accessToken
-headers["authorization"] = get_authorization()
+headers["authorization"] = get_authorization(headers)
 
 app = Flask(__name__)
 
