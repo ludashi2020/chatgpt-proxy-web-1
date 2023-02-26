@@ -67,7 +67,7 @@ headers = {
 }
 
 # set accessToken
-headers["authorization"] = get_authorization(headers)
+headers["authorization"] = get_authorization(headers, cookie_dict)
 
 app = Flask(__name__)
 
