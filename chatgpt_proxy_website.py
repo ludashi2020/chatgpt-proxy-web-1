@@ -72,7 +72,7 @@ def get_authorization():
     authorization = r.json()["accessToken"]
     return "Bearer "+authorization
 
-headers["authorization"] = get_authorization(headers, cookie_dict)
+headers["authorization"] = get_authorization()
 
 app = Flask(__name__)
 
