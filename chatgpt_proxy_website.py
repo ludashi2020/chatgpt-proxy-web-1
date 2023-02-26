@@ -25,9 +25,6 @@ proxies = {"https": ""}
 # Must and Required parameter.
 _puid = ""
 
-# Password can be added if needed. example:  md5(('test@qq.com123456').encode()).hexdigest()
-user_id = ""
-
 # session_token and cf_clearance, get rtom cookies.
 session_token = ""
 cf_clearance = ""
@@ -36,6 +33,8 @@ cf_clearance = ""
 # if you change this, you should delete static resource.
 listen_url = "http://127.0.0.1:8011"
 
+# Password can be added if needed. example:  md5(('test@qq.com123456').encode()).hexdigest()
+user_id = ""
 
 # Login and get cookie_dict
 cookie_dict = {
