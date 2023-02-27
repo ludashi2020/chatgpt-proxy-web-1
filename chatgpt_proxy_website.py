@@ -31,7 +31,8 @@ cf_clearance = ""
 
 # listen_url can be change if needed.
 # if you change this, you should delete static resource.
-listen_url = "http://127.0.0.1:8011"
+listen_url = "http://127.0.0.1"
+listen_port = 8011
 
 # Password can be added if needed. example:  md5(('test@qq.com123456').encode()).hexdigest()
 user_id = ""
@@ -170,7 +171,6 @@ def index(uri):
 
 if __name__ == "__main__":
     host = '0.0.0.0' if '127.0.0.1' not in listen_url else '127.0.0.1'
-    port = int(listen_url.split(':')[-1]) if ':' in listen_url.split('//')[1] else 80
-    app.run(host=host, port=port, threaded=True)
-    # WSGIServer((host, port), app).serve_forever()
+    app.run(host=host, port=listen_port, threaded=True)
+    # WSGIServer((host, listen_port), app).serve_forever()
     # open in browser: http://127.0.0.1:8011/chat
