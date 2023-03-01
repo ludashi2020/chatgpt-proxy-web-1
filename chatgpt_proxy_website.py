@@ -99,6 +99,8 @@ with open('login_failed.html', 'r', encoding='utf-8') as f:
 # login authentication
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    if not user_id:
+        return redirect('/chat',302)
     if request.cookies.get("accessToken")  == user_id:
         return redirect('/chat',302)
     if request.method =='GET':
