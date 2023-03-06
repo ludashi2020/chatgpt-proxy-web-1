@@ -5,26 +5,43 @@ Flask reverse proxy ChatGPT website chat.openai.com/chat.
 
 ## Prepare
 
-You should first login to [ChatGPT Website](https://chat.openai.com/chat), find the cookies named `_puid` `__Secure-next-auth.session-token` `cf_clearance`, and copy their values.
+You should login to [ChatGPT Website](https://chat.openai.com/chat), find the cookies named `_puid`, and copy value.
 
 **This project relies heavily on the exclusively for Plus `_puid` parameter. Without it, CloudFare cannot be bypassed.**
 
 ``` python
 # Must and Required parameter.
 _puid = ""
+```
 
-# session_token and cf_clearance
+Now you can use the chatgpt mailbox password to automatically log in.
+``` python
+# Congratulations! Now you can log in with Chatgopt mailbox password.
+email_address = ""
+password = ""
+```
+
+If you login by Chrome or Microsoft, You should login to [ChatGPT Website](https://chat.openai.com/chat), find the cookies named `__Secure-next-auth.session-token` `clearance`, and copy value. 
+
+``` python
+# `session_token` and `cf_clearance`, get from cookies, if login by Chrome or Microsoft.
 session_token = ""
 cf_clearance = ""
 ```
 
-~~Now you can use the chatgpt mailbox password to automatically log in to get session_token.~~
-
-Now you can add password verification to your webpage, leave it blank for no verification.
+Now you can add password verification to your webpage with set `is_verify=True`, default for no verification.
 
 ``` python
-# Password can be added if needed. example:  md5(('test@qq.com123456').encode()).hexdigest()
-user_id = ""
+# Login Password can be set `is_verify = True` if needed.
+is_verify = False
+```
+
+If you run website with domain, you should change listen_url to domain.
+``` python
+# listen_url can be change if needed.
+# if you change this, you should delete static resource.
+listen_url = "http://127.0.0.1"
+listen_port = 8011
 ```
 
 ## Install dependencies
