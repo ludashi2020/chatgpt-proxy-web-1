@@ -137,7 +137,7 @@ def login():
 @app.route('/<path:uri>', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'TRACE', 'CONNECT', 'PATCH'])
 def index(uri):
     # authentication cookie
-    if user_id and request.cookies.get("accessToken") != user_id:
+    if is_verify and request.cookies.get("accessToken") != user_id:
         return redirect("/", 302)
     # signout
     if 'auth/signout' in uri:
