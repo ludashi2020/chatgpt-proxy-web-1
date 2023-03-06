@@ -52,7 +52,6 @@ headers = {
     'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
     'cache-control': 'no-cache',
     'content-type': 'application/json',
-    'cookie': cookie,
     'dnt': '1',
     'origin': 'https://chat.openai.com',
     'pragma': 'no-cache',
@@ -77,7 +76,7 @@ def get_authorization():
 # Login and set cookie_dict
 cookie_dict = {"_puid":_puid}
 if email_address and password:
-    Auth = auth.Authenticator(email_address, password, proxies["https"])
+    Auth = Authenticator(email_address, password, proxies["https"])
     Auth.begin()
     access_token = Auth.get_access_token()
     session_token = Auth.get_session_token()
