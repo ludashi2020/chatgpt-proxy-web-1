@@ -15,7 +15,8 @@ _puid = ""
 ```
 
 Now you can use the chatgpt mailbox password to automatically log in.
-Automatic login part `auth.py`, thanks to `https://github.com/acheong08/OpenAIAuth`
+
+Automatic login part `auth.py`, thanks to [https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth)
 
 ``` python
 # Congratulations! Now you can log in with Chatgopt mailbox password.
