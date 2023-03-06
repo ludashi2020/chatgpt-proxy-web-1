@@ -1,4 +1,4 @@
-# chatgpt_proxy_website
+# chatgpt-proxy-web
 Flask reverse proxy ChatGPT website chat.openai.com/chat.
 
 [中文说明](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/README_ZN.md)
