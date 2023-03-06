@@ -8,9 +8,10 @@ Date：2023-02-22
 import os
 import requests
 from hashlib import md5
+from auth import Authenticator
 from urllib.parse import unquote
-from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response
 from werkzeug.routing import BaseConverter
+from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response
 
 # Use gevent to speed up if needed.
 '''
@@ -25,7 +26,11 @@ proxies = {"https": ""}
 # Must and Required parameter.
 _puid = ""
 
-# session_token and cf_clearance, get rtom cookies.
+# Congratulations! Now you can log in with Chatgopt mailbox password.
+email_address = ""
+password = ""
+
+# `session_token` and `cf_clearance`, get from cookies, if login by Chrome or Microsoft.
 session_token = ""
 cf_clearance = ""
 
@@ -34,17 +39,13 @@ cf_clearance = ""
 listen_url = "http://127.0.0.1"
 listen_port = 8011
 
-# Password can be added if needed. example:  md5(('test@qq.com123456').encode()).hexdigest()
-user_id = ""
+# Login Password can be set `is_verify = True` if needed.
+is_verify = False
 
-# Login and get cookie_dict
-cookie_dict = {
-    "_puid":_puid, 
-    "__Secure-next-auth.session-token":session_token,
-    "cf_clearance": cf_clearance
-}
-cookie = '; '.join([f'{k}={v}' for k,v in cookie_dict.items()])
+# if login by Chrome or Microsoft, must be rewrite `user_id = md5((<your_email> + <your_password>).encode()).hexdigest()`
+user_id = md5((email_address + password).encode()).hexdigest() if email_address and password else ""
 
+# set headers
 headers = {
     'authority': 'chat.openai.com',
     'accept': 'text/event-stream',
@@ -64,7 +65,7 @@ headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
 }
 
-# set accessToken
+# get accessToken
 def get_authorization():
     """get accessToken"""
     url = "https://chat.openai.com/api/auth/session"
@@ -73,7 +74,24 @@ def get_authorization():
     authorization = r.json()["accessToken"]
     return "Bearer "+authorization
 
-headers["authorization"] = get_authorization()
+# Login and set cookie_dict
+cookie_dict = {"_puid":_puid}
+if email_address and password:
+    Auth = auth.Authenticator(email_address, password, proxies["https"])
+    Auth.begin()
+    access_token = Auth.get_access_token()
+    session_token = Auth.get_session_token()
+    cookie_dict["__Secure-next-auth.session-token"] = session_token
+    cookie = '; '.join([f'{k}={v}' for k,v in cookie_dict.items()])
+    headers["cookie"] = cookie
+    headers["authorization"] = "Bearer " + access_token
+else:
+    cookie_dict["__Secure-next-auth.session-token"] = session_token
+    cookie_dict["cf_clearance"] = cf_clearance
+    cookie = '; '.join([f'{k}={v}' for k,v in cookie_dict.items()])
+    headers["cookie"] = cookie
+    headers["authorization"] = get_authorization()
+
 
 app = Flask(__name__)
 
@@ -99,7 +117,7 @@ with open('login_failed.html', 'r', encoding='utf-8') as f:
 # login authentication
 @app.route('/', methods=['GET', 'POST'])
 def login():
-    if not user_id:
+    if not is_verify:
         return redirect('/chat',302)
     if request.cookies.get("accessToken")  == user_id:
         return redirect('/chat',302)
@@ -166,9 +184,7 @@ def index(uri):
         return response
     # backend api request
     else:
-        headers['cookie'] = '; '.join([f'{k}={v}' for k,v in cookie_dict.items()])
         r = requests.request(request.method, url, headers=headers, cookies=cookie_dict, data=request.data, proxies=proxies)
-        cookie_dict.update(r.cookies)
         return r.content.replace(b'https://chat.openai.com', listen_url.encode())
 
 if __name__ == "__main__":
