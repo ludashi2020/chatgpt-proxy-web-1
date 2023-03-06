@@ -6,7 +6,7 @@ Flask 反向代理 ChatGPT 网站 chat.openai.com/chat。
 
 您应该登录 [ChatGPT 网站](https://chat.openai.com/chat)，找到名为 `_puid` 的 cookie，然后复制值。
 
-**该项目严重依赖于专用于 Plus 的 `_puid` 参数。 没有它，就无法绕过 CloudFare。**
+**该项目严重依赖于专用于 Plus 的 `_puid` 参数。 没有它，就无法绕过 CloudFlare。**
 
 ``` python
 # Must and Required parameter.
