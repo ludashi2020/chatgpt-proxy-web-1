@@ -15,6 +15,8 @@ _puid = ""
 ```
 
 Now you can use the chatgpt mailbox password to automatically log in.
+Automatic login part `auth.py`, thanks to `https://github.com/acheong08/OpenAIAuth`
+
 ``` python
 # Congratulations! Now you can log in with Chatgopt mailbox password.
 email_address = ""
@@ -64,7 +66,6 @@ browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 ## Note
 
 1. It can only be used for Plus member accounts, free accounts without _puid parameters will have CF verification.
-2. The account currently logged in can be used normally without overpassing the wall. In China。
 
 ## Renderings
 ![login](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/login.png)
