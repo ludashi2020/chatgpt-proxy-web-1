@@ -34,6 +34,9 @@ Now you can add password verification to your webpage with set `is_verify=True`,
 ``` python
 # Login Password can be set `is_verify = True` if needed.
 is_verify = False
+
+# if login by Chrome or Microsoft, must be rewrite `user_id = md5((<your_email> + <your_password>).encode()).hexdigest()`
+user_id = md5((email_address + password).encode()).hexdigest() if email_address and password else ""
 ```
 
 If you run website with domain, you should change listen_url to domain.
