@@ -1,133 +1,334 @@
-# -*- coding: utf-8 -*-
+# Credits to github.com/rawandahmad698/PyChatGPT
+import re
+import urllib
 
-import time
 import requests
-from urllib.parse import quote
 
-proxies = {}
 
-headers = {
-    'authority': 'chat.openai.com',
-    'cookie': '',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
-}
+class Error(Exception):
+    """
+    Base error class
+    """
 
-cookies = {}
+    location: str
+    status_code: int
+    details: str
 
-session = requests.Session()
+    def __init__(self, location: str, status_code: int, details: str):
+        self.location = location
+        self.status_code = status_code
+        self.details = details
 
-def get_authorization(headers, cookies):
-    """get accessToken"""
-    url = "https://chat.openai.com/api/auth/session"
-    r = requests.get(url, headers=headers, cookies=cookies, proxies=proxies)
-    print(r.json()['user']['email'], 'get accesstoken successful.')
-    authorization = r.json()["accessToken"]
-    return "Bearer "+authorization
 
-def get_login_cookie(_puid):
-    cookies["_puid"] = _puid
-    r = session.get("https://chat.openai.com/auth/login?next=/chat", headers=headers, cookies=cookies, proxies=proxies)
-    cookies.update(r.cookies)
-    cookies.update(session.cookies)
-    headers["cookie"] = '; '.join([f'{k}={v}' for k,v in cookies.items()])
-    r = session.get("https://chat.openai.com/api/auth/providers", headers=headers, cookies=cookies, proxies=proxies)
-    cookies.update(r.cookies)
-    cookies.update(session.cookies)
+class Authenticator:
+    """
+    OpenAI Authentication Reverse Engineered
+    """
 
-def get_csrf_token():
-    url = "https://chat.openai.com/api/auth/csrf"
-    headers["cookie"] = '; '.join([f'{k}={v}' for k,v in cookies.items()])
-    r = session.get(url, headers=headers, cookies=cookies, proxies=proxies)
-    cookies.update(r.cookies)
-    cookies.update(session.cookies)
-    csrf_token = r.json()["csrfToken"]
-    return csrf_token
+    def __init__(
+        self,
+        email_address: str,
+        password: str,
+        proxy: str = None,
+    ):
+        self.session_token = None
+        self.email_address = email_address
+        self.password = password
+        self.proxy = proxy
+        self.session = requests.Session()
+        proxies = {
+            "http": self.proxy,
+            "https": self.proxy,
+        }
+        self.session.proxies.update(proxies)
+        self.access_token: str = None
+        self.user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
 
-def get_authrize_url(csrf_token):
-    url = "https://chat.openai.com/api/auth/signin/auth0?prompt=login"
-    payload=f'callbackUrl=%2Fchat&csrfToken={csrf_token}&json=true'
-    cookie = '; '.join([f'{k}={v}' for k,v in cookies.items()])
-    headers = {
-        'authority': 'chat.openai.com',
-        'content-type': 'application/x-www-form-urlencoded',
-        'cookie': cookie,
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
-    }
-    r = session.post(url, headers=headers, data=payload, cookies=cookies, proxies=proxies)
-    cookies.update(r.cookies)
-    cookies.update(session.cookies)
-    return r.json()["url"]
+    @staticmethod
+    def url_encode(string: str) -> str:
+        """
+        URL encode a string
+        :param string:
+        :return:
+        """
+        return urllib.parse.quote(string)
 
-def get_identifier_url(authrize_url):
-    headers["cookie"] = '; '.join([f'{k}={v}' for k,v in cookies.items()])
-    r = session.get(authrize_url, headers=headers, cookies=cookies, proxies=proxies)
-    cookies.update(r.cookies)
-    cookies.update(session.cookies)
-    auth0_compat = session.cookies.get("auth0_compat")
-    return r.url
+    def begin(self) -> None:
+        """
+        In part two, We make a request to https://explorer.api.openai.com/api/auth/csrf and grab a fresh csrf token
+        """
+        url = "https://explorer.api.openai.com/api/auth/csrf"
+        headers = {
+            "Host": "explorer.api.openai.com",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+            "User-Agent": self.user_agent,
+            "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+            "Referer": "https://explorer.api.openai.com/auth/login",
+            "Accept-Encoding": "gzip, deflate, br",
+        }
+        response = self.session.get(
+            url=url,
+            headers=headers,
+        )
+        if response.status_code == 200 and "json" in response.headers["Content-Type"]:
+            csrf_token = response.json()["csrfToken"]
+            self.__part_one(token=csrf_token)
+        else:
+            raise Error(
+                location="begin",
+                status_code=response.status_code,
+                details=response.text,
+            )
 
-def get_password_url(identifier_url, email_address):
-    state = identifier_url.split("state=")[1]
-    url = f"https://auth0.openai.com/u/login/identifier?state={state}"
+    def __part_one(self, token: str) -> None:
+        """
+        We reuse the token from part to make a request to /api/auth/signin/auth0?prompt=login
+        """
+        url = "https://explorer.api.openai.com/api/auth/signin/auth0?prompt=login"
+        payload = f"callbackUrl=%2F&csrfToken={token}&json=true"
+        headers = {
+            "Host": "explorer.api.openai.com",
+            "User-Agent": self.user_agent,
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "*/*",
+            "Sec-Gpc": "1",
+            "Accept-Language": "en-US,en;q=0.8",
+            "Origin": "https://explorer.api.openai.com",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Dest": "empty",
+            "Referer": "https://explorer.api.openai.com/auth/login",
+            "Accept-Encoding": "gzip, deflate",
+        }
+        response = self.session.post(url=url, headers=headers, data=payload)
+        if response.status_code == 200 and "json" in response.headers["Content-Type"]:
+            url = response.json()["url"]
+            if (
+                url
+                == "https://explorer.api.openai.com/api/auth/error?error=OAuthSignin"
+                or "error" in url
+            ):
+                raise Error(
+                    location="__part_one",
+                    status_code=response.status_code,
+                    details="You have been rate limited. Please try again later.",
+                )
+            self.__part_two(url=url)
+        else:
+            raise Error(
+                location="__part_one",
+                status_code=response.status_code,
+                details=response.text,
+            )
 
-    payload = f'state={state}&username={quote(email_address)}&js-available=true&webauthn-available=true&is-brave=false&webauthn-platform-available=false&action=default'
-    cookie = '; '.join([f'{k}={v}' for k,v in cookies.items()])
-    headers = {
-      'authority': 'auth0.openai.com',
-      'content-type': 'application/x-www-form-urlencoded',
-      'cookie': cookie,
-      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
-    }
-    r =session.post(url, headers=headers, data=payload, cookies=cookies, proxies=proxies)
-    cookies.update(r.cookies)
-    cookies.update(session.cookies)
-    return r.url
+    def __part_two(self, url: str) -> None:
+        """
+        We make a GET request to url
+        :param url:
+        :return:
+        """
+        headers = {
+            "Host": "auth0.openai.com",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Connection": "keep-alive",
+            "User-Agent": self.user_agent,
+            "Accept-Language": "en-US,en;q=0.9",
+            "Referer": "https://explorer.api.openai.com/",
+        }
+        response = self.session.get(
+            url=url,
+            headers=headers,
+        )
+        if response.status_code == 302 or response.status_code == 200:
+            state = re.findall(r"state=(.*)", response.text)[0]
+            state = state.split('"')[0]
+            self.__part_three(state=state)
+        else:
+            raise Error(
+                location="__part_two",
+                status_code=response.status_code,
+                details=response.text,
+            )
 
-def get_resume_state(password_url, email_address, password):
-    state = password_url.split("state=")[1]
+    def __part_three(self, state: str) -> None:
+        """
+        We use the state to get the login page
+        """
+        url = f"https://auth0.openai.com/u/login/identifier?state={state}"
 
-    payload = f'state={state}&username={quote(email_address)}&password={quote(password)}&action=default'
-    cookie = '; '.join([f'{k}={v}' for k,v in cookies.items()])
-    headers = {
-      'authority': 'auth0.openai.com',
-      'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-      'accept-language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-      'cache-control': 'no-cache',
-      'content-type': 'application/x-www-form-urlencoded',
-      'cookie': cookie,
-      'dnt': '1',
-      'origin': 'https://auth0.openai.com',
-      'pragma': 'no-cache',
-      'referer': f'https://auth0.openai.com/u/login/password?state={state}',
-      'sec-ch-ua': '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
-      'sec-ch-ua-mobile': '?0',
-      'sec-ch-ua-platform': '"Windows"',
-      'sec-fetch-dest': 'document',
-      'sec-fetch-mode': 'navigate',
-      'sec-fetch-site': 'same-origin',
-      'sec-fetch-user': '?1',
-      'upgrade-insecure-requests': '1',
-      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
-    }
-    r = session.post(password_url, headers=headers, data=payload, cookies=cookies,proxies=proxies)
-    cookies.update(r.cookies)
-    cookies.update(session.cookies)
+        headers = {
+            "Host": "auth0.openai.com",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Connection": "keep-alive",
+            "User-Agent": self.user_agent,
+            "Accept-Language": "en-US,en;q=0.9",
+            "Referer": "https://explorer.api.openai.com/",
+        }
+        response = self.session.get(url, headers=headers)
+        if response.status_code == 200:
+            self.__part_four(state=state)
+        else:
+            raise Error(
+                location="__part_three",
+                status_code=response.status_code,
+                details=response.text,
+            )
 
-def get_cookies(_puid, email_address, password):
-    get_login_cookie(_puid)
-    time.sleep(1)
-    csrf_token = get_csrf_token()
-    time.sleep(1)
-    authrize_url = get_authrize_url(csrf_token)
-    time.sleep(1)
-    identifier_url = get_identifier_url(authrize_url)
-    time.sleep(1)
-    password_url = get_password_url(identifier_url, email_address)
-    time.sleep(1)
-    get_resume_state(password_url, email_address, password)
-    print(email_address, 'get session_token successful.')
-    return cookies
+    def __part_four(self, state: str) -> None:
+        """
+        We make a POST request to the login page with the captcha, email
+        :param state:
+        :return:
+        """
+        url = f"https://auth0.openai.com/u/login/identifier?state={state}"
+        email_url_encoded = self.url_encode(self.email_address)
 
+        payload = (
+            f"state={state}&username={email_url_encoded}&js-available=false&webauthn-available=true&is"
+            f"-brave=false&webauthn-platform-available=true&action=default "
+        )
+
+        headers = {
+            "Host": "auth0.openai.com",
+            "Origin": "https://auth0.openai.com",
+            "Connection": "keep-alive",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "User-Agent": self.user_agent,
+            "Referer": f"https://auth0.openai.com/u/login/identifier?state={state}",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        response = self.session.post(
+            url,
+            headers=headers,
+            data=payload,
+        )
+        if response.status_code == 302 or response.status_code == 200:
+            self.__part_five(state=state)
+        else:
+            raise Error(
+                location="__part_four",
+                status_code=response.status_code,
+                details="Your email address is invalid.",
+            )
+
+    def __part_five(self, state: str) -> None:
+        """
+        We enter the password
+        :param state:
+        :return:
+        """
+        url = f"https://auth0.openai.com/u/login/password?state={state}"
+        email_url_encoded = self.url_encode(self.email_address)
+        password_url_encoded = self.url_encode(self.password)
+        payload = f"state={state}&username={email_url_encoded}&password={password_url_encoded}&action=default"
+        headers = {
+            "Host": "auth0.openai.com",
+            "Origin": "https://auth0.openai.com",
+            "Connection": "keep-alive",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "User-Agent": self.user_agent,
+            "Referer": f"https://auth0.openai.com/u/login/password?state={state}",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        response = self.session.post(
+            url,
+            headers=headers,
+            allow_redirects=False,
+            data=payload,
+        )
+        if response.status_code == 302 or response.status_code == 200:
+            new_state = re.findall(r"state=(.*)", response.text)[0]
+            new_state = new_state.split('"')[0]
+            self.__part_six(old_state=state, new_state=new_state)
+        else:
+            raise Error(
+                location="__part_five",
+                status_code=response.status_code,
+                details="Your credentials are invalid.",
+            )
+
+    def __part_six(self, old_state: str, new_state) -> None:
+        url = f"https://auth0.openai.com/authorize/resume?state={new_state}"
+        headers = {
+            "Host": "auth0.openai.com",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Connection": "keep-alive",
+            "User-Agent": self.user_agent,
+            "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+            "Referer": f"https://auth0.openai.com/u/login/password?state={old_state}",
+        }
+        response = self.session.get(
+            url,
+            headers=headers,
+            allow_redirects=False,
+        )
+        if response.status_code == 302:
+            # Print redirect url
+            redirect_url = response.headers.get("location")
+            self.__part_seven(redirect_url=redirect_url, previous_url=url)
+        else:
+            raise Error(
+                location="__part_six",
+                status_code=response.status_code,
+                details=response.text,
+            )
+
+    def __part_seven(self, redirect_url: str, previous_url: str) -> None:
+        url = redirect_url
+        headers = {
+            "Host": "explorer.api.openai.com",
+            "Accept": "application/json",
+            "Connection": "keep-alive",
+            "User-Agent": self.user_agent,
+            "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+            "Referer": previous_url,
+        }
+        response = self.session.get(
+            url,
+            headers=headers,
+            allow_redirects=False,
+        )
+        if response.status_code == 302:
+            self.session_token = response.cookies.get(
+                "__Secure-next-auth.session-token",
+            )
+            self.get_access_token()
+        else:
+            raise Error(
+                location="__part_seven",
+                status_code=response.status_code,
+                details=response.text,
+            )
+
+    def get_access_token(self):
+        """
+        Gets access token
+        """
+        self.session.cookies.set(
+            "__Secure-next-auth.session-token",
+            self.session_token,
+        )
+        response = self.session.get(
+            "https://explorer.api.openai.com/api/auth/session",
+        )
+        # print(self.session.cookies["clearance"])
+        if response.status_code == 200:
+            self.access_token = response.json()["accessToken"]
+            return self.access_token
+        else:
+            raise Error(
+                location="get_access_token",
+                status_code=response.status_code,
+                details=response.text,
+            )
+
+    def get_session_token(self):
+        return self.session_token
 
 if __name__ == "__main__":
-    print(get_cookies("user-xxxxxxxxxx", "test@proton.me", "123456"))
+    A = Authenticator("test@qq.com", "123456", "http://127.0.0.1:7890")
+    A.begin()
+    print(A.get_access_token())
