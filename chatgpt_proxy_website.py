@@ -38,6 +38,7 @@ cf_clearance = ""
 # if you change this, you should delete static resource.
 listen_url = "http://127.0.0.1"
 listen_port = 8011
+listen_url = listen_url + ":" + str(listen_port) if listen_port != 80 else listen_url
 
 # Login Password can be set `is_verify = True` if needed.
 is_verify = False
@@ -149,6 +150,10 @@ def index(uri):
     # If the request is a static resource, otherwise get it from the remote
     if any(x in url for x in ('.jpg', '.png', '.ico', '.woff', '.otf', '.css', '.js')):
         ext = url.split('.')[-1]
+        if "?" in ext:
+            ext = ext.split("?")[0]
+        if "&" in ext:
+            ext = ext.split("&")[0]
         filename = md5(url.encode('utf-8')).hexdigest()
         filepath = os.path.join(resource_dir, f'{filename}.{ext}')
         if os.path.isfile(filepath):
