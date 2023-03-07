@@ -154,6 +154,8 @@ def index(uri):
             ext = ext.split("?")[0]
         if "&" in ext:
             ext = ext.split("&")[0]
+        if "url=" in url:
+            url = unquote(url.split("url=")[-1])
         filename = md5(url.encode('utf-8')).hexdigest()
         filepath = os.path.join(resource_dir, f'{filename}.{ext}')
         if os.path.isfile(filepath):
