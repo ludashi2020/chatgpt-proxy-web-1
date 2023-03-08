@@ -81,7 +81,7 @@ for i in password_list:
     user_cookies[user] = cookie_dict
 
 if len(user_headers) == 1:
-    user_id = user_headers.items()[0]
+    user_id = list(user_headers.keys())[0]
 
 app = Flask(__name__)
 
