@@ -145,7 +145,7 @@ def index(uri):
         if "&" in ext:
             ext = ext.split("&")[0]
         filename = md5(url.encode('utf-8')).hexdigest()
-        filepath = os.path.join(resource_dir, ext, f'{filename}.{ext}')
+        filepath = os.path.join(resource_dir, f'{filename}.{ext}')
         if os.path.isfile(filepath):
             return send_file(filepath)
         else:
@@ -182,7 +182,7 @@ def index(uri):
         return r.content.replace(b'https://chat.openai.com', listen_url.encode())
 
 if __name__ == "__main__":
-    host = '0.0.0.0' if '127.0.0.1' not in listen_url else '127.0.0.1'
+    host = '127.0.0.1' if listen_url.count(".") == 1 else listen_url.split("//")[-1].split(":")[0]
     app.run(host=host, port=listen_port, threaded=True)
     # WSGIServer((host, listen_port), app).serve_forever()
     # 在浏览器打开: http://127.0.0.1:8011/chat
