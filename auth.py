@@ -4,6 +4,14 @@ import urllib
 
 import requests
 
+# get accessToken
+def get_authorization(headers, cookie_dict, proxies):
+    """get accessToken"""
+    url = "https://explorer.api.openai.com/api/auth/session"
+    r = requests.get(url, headers=headers, cookies=cookie_dict, proxies=proxies)
+    print(r.json()['user']['email'], 'get accesstoken successful.')
+    authorization = r.json()["accessToken"]
+    return "Bearer "+authorization
 
 class Error(Exception):
     """
