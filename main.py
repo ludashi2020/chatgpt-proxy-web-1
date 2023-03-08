@@ -21,7 +21,7 @@ proxies = {"https": ""}
 # 必须要填写的plus账号专属的_puid参数，如果你没有，可以问朋友要啊，又没有一定要自己的^_^
 _puid = ""
 
-# 支持多用户同时使用
+# 支持多用户同时使用，多用户时必须开启账号密码登录
 password_list = [
     # 如果使用邮箱密码登录，只需填写`email_address`和`password`参数
     # 如果使用Chrome或Microsoft登录，需要`session_token`
@@ -41,7 +41,7 @@ is_verify = False
 
 user_headers = {}
 user_cookies = {}
-session_json = ""
+user_id = ""
 for i in password_list:
     email_address,password,session_token,user = i.values()
     cookie_dict = {"_puid":_puid}
@@ -79,6 +79,9 @@ for i in password_list:
         headers["authorization"] = get_authorization(headers, cookie_dict, proxies)
     user_headers[user] = headers
     user_cookies[user] = cookie_dict
+
+if len(user_headers) == 1:
+    user_id = user_headers.items()[0]
 
 app = Flask(__name__)
 
@@ -134,7 +137,7 @@ def index(uri):
         return resp
     param = '&'.join([f'{i}={j}' for i,j in request.args.items()])
     url = f"https://chat.openai.com/{uri}?{param}" if param else f"https://chat.openai.com/{uri}"
-    uid = request.cookies.get("accessToken")
+    uid = request.cookies.get("accessToken") or user_id
     headers = user_headers[uid]
     cookie_dict = user_cookies[uid]
     # 如果请求是静态资源，则从本地获取，否则从远程获取
