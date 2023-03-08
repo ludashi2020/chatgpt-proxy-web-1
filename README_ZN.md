@@ -17,19 +17,16 @@ _puid = ""
 
 自动登录部分 `auth.py` ,感谢[https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth)
 
-``` python
-# Congratulations! Now you can log in with Chatgopt mailbox password.
-email_address = ""
-password = ""
-```
-
-如果您使用 Chrome 或 Microsoft 登录，您应该登录 [ChatGPT 网站](https://chat.openai.com/chat)，
-找到名为 `__Secure-next-auth.session-token` `clearance` 的 cookie，以及 复制值。
+加入多用户支持，可以和小伙伴们一起玩耍了
 
 ``` python
-# `session_token` and `cf_clearance`, get from cookies, if login by Chrome or Microsoft.
-session_token = ""
-cf_clearance = ""
+# 支持多用户同时使用
+password_list = [
+    # 如果使用邮箱密码登录，只需填写`email_address`和`password`参数
+    # 如果使用Chrome或Microsoft登录，需要`session_token`
+    # 如果使用Chrome或Microsoft登录，又要开启账号密码登录的，需要重写user参数: user = md5(('your_email'+'your_password').encode()).hexdigest()
+    {"email_address": "", "password": "", "session_token": None, "user": None},
+]
 ```
 
 现在您可以通过设置 `is_verify=True` 为您的网页添加密码验证，默认为不验证。
