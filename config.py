@@ -16,9 +16,10 @@ _puid = ""
 '''
 1. 如果使用邮箱密码登录，则只需要填写email_address和password这两个参数 [If using email login, only the `email_address` and `password` require.]
 2. 如果使用Chrome或Microsoft登录，则只需要填写session_token这一个参数 [If not email login, only the `session_token` require.]
-3. 如果使用Chrome或Microsoft登录，并且同时开启了账号密码认证，则需要重写user参数 If not email login and also enable is_verify, the `user` needs to be rewritten.]
+3. 如果使用Chrome或Microsoft登录，并且同时开启了账号密码认证，则需要重写user参数 [If not email login and also enable is_verify, the `user` needs to be rewritten.]
    user = md5(('your_email' + 'your_password').encode()).hexdigest()
 '''
+
 password_list = [
     {"email_address": "", "password": "", "session_token": None, "user": None},
 ]
