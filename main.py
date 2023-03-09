@@ -25,7 +25,7 @@ user_cookies = {}
 user_id = ""
 for i in password_list:
     email_address,password,session_token,user = i.values()
-    cookie_dict = {"_puid":_puid}
+    cookie_dict = {"_puid":puid}
     headers = {
         'authority': 'chat.openai.com',
         'accept': 'text/event-stream',
