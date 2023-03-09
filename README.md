@@ -1,9 +1,13 @@
 # chatgpt-proxy-web
 Flask reverse proxy ChatGPT website chat.openai.com/chat.
 
-[中文说明](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/README_ZN.md)
+[中文](https://github.com/cooolr/chatgpt-proxy-web/blob/main/README_ZN.md) | [English](https://github.com/cooolr/chatgpt-proxy-web/blob/main/README.md)
 
 ## Prepare
+
+You should log in to the [ChatGPT website](https://chat.openai.com/chat), find the cookie named `_puid`, and then copy its value.
+
+**This project heavily relies on the Plus-exclusive _puid parameter. Without it, CloudFlare cannot be bypassed.**
 
 Modify `config.py` to set the configuration.
 ``` python
@@ -49,6 +53,7 @@ browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 ## Note
 
 1. It can only be used for Plus member accounts, free accounts without _puid parameters will have CF verification.
+2. auto login `auth.py`, thank you [https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth).
 
 ## Renderings
 ![login](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/login.png)
