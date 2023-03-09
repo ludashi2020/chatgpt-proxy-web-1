@@ -5,49 +5,31 @@ Flask reverse proxy ChatGPT website chat.openai.com/chat.
 
 ## Prepare
 
-You should login to [ChatGPT Website](https://chat.openai.com/chat), find the cookies named `_puid`, and copy value.
-
-**This project relies heavily on the exclusively for Plus `_puid` parameter. Without it, CloudFlare cannot be bypassed.**
-
+Modify `config.py` to set the configuration.
 ``` python
-# Must and Required parameter.
-_puid = ""
-```
-
-Now you can use the chatgpt mailbox password to automatically log in.
-
-Automatic login part `auth.py`, thanks to [https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth)
-
-``` python
-# Congratulations! Now you can log in with Chatgopt mailbox password.
-email_address = ""
-password = ""
-```
-
-If you login by Chrome or Microsoft, You should login to [ChatGPT Website](https://chat.openai.com/chat), find the cookies named `__Secure-next-auth.session-token` `clearance`, and copy value. 
-
-``` python
-# `session_token` and `cf_clearance`, get from cookies, if login by Chrome or Microsoft.
-session_token = ""
-cf_clearance = ""
-```
-
-Now you can add password verification to your webpage with set `is_verify=True`, default for no verification.
-
-``` python
-# Login Password can be set `is_verify = True` if needed.
-is_verify = False
-
-# if login by Chrome or Microsoft, must be rewrite `user_id = md5((<your_email> + <your_password>).encode()).hexdigest()`
-user_id = md5((email_address + password).encode()).hexdigest() if email_address and password else ""
-```
-
-If you run website with domain, you should change listen_url to domain.
-``` python
-# listen_url can be change if needed.
-# if you change this, you should delete static resource.
+# If you change this property, the `resource` directory needs to be manually deleted.
 listen_url = "http://127.0.0.1"
 listen_port = 8011
+
+# Enable account and password authentication for the webpage.
+is_verify = False
+
+# Proxy configuration, either HTTP or SOCKS5.
+proxies = {"https": ""}
+
+# Plus-exclusive cookie parameters. If you don't have them, ask a friend to share theirs.
+_puid = ""
+
+'''
+1. If using email login, only the `email_address` and `password` require.
+2. If not email login, only the `session_token` require.
+3. If not email login and also enable is_verify, the `user` needs to be rewritten.
+   user = md5(('your_email' + 'your_password').encode()).hexdigest()
+'''
+
+password_list = [
+    {"email_address": "", "password": "", "session_token": None, "user": None},
+]
 ```
 
 ## Install dependencies
