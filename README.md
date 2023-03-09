@@ -59,7 +59,7 @@ pip install -r requirements.txt
 ## Quick start
 
 ``` bash
-python3 chatgpt_proxy_website.py
+python3 main.py
 ```
 
 browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
