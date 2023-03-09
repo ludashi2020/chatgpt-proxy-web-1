@@ -22,7 +22,7 @@ is_verify = False
 proxies = {"https": ""}
 
 # Plus-exclusive cookie parameters. If you don't have them, ask a friend to share theirs.
-_puid = ""
+puid = ""
 
 '''
 1. If using email login, only the `email_address` and `password` require.
