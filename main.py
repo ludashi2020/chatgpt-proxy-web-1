@@ -14,7 +14,8 @@ import requests
 from hashlib import md5
 from urllib.parse import unquote
 from werkzeug.routing import BaseConverter
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
 from auth import *
 from config import *
 
@@ -76,13 +77,13 @@ class RegexConverter(BaseConverter):
 app.url_map.converters['regex'] = RegexConverter
 
 # 如果变更listen_url和listen_port，需要把这个目录删掉
-resource_dir = './resource'
+resource_dir = os.path.join(current_dir, 'resource')
 os.makedirs(resource_dir, exist_ok=True)
 
 # 预加载登录和登录失败页面
-with open('login.html', 'r', encoding='utf-8') as f:
+with open(os.path.join(current_dir, 'static_files', 'login.html'), 'r', encoding='utf-8') as f:
     login_html = f.read()
-with open('login_failed.html', 'r', encoding='utf-8') as f:
+with open(os.path.join(current_dir, 'static_files', 'login_failed.html'), 'r', encoding='utf-8') as f:
     login_failed_html = f.read()
 
 # 登录认证
@@ -118,7 +119,7 @@ def index(uri):
         return resp
     param = '&'.join([f'{i}={j}' for i,j in request.args.items()])
     url = f"https://chat.openai.com/{uri}?{param}" if param else f"https://chat.openai.com/{uri}"
-    uid = request.cookies.get("accessToken") or user_id
+    uid = request.cookies.get("accessToken") if is_verify else user_id
     headers = user_headers[uid]
     cookie_dict = user_cookies[uid]
     # 如果请求是静态资源，则从本地获取，否则从远程获取
