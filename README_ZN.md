@@ -1,6 +1,9 @@
-# chatgpt-proxy-webs
+# chatgpt-proxy-web
 
 Flask 反向代理 ChatGPT 网站 chat.openai.com/chat。
+
+
+[中文](https://github.com/cooolr/chatgpt-proxy-web/blob/main/README_ZN.md) | [English](https://github.com/cooolr/chatgpt-proxy-web/blob/main/README.md)
 
 ## 准备
 
