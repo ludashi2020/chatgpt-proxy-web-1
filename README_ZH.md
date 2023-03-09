@@ -57,5 +57,5 @@ python3 main.py
 2. 自动登录部分 `auth.py` ,感谢[https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth)
 
 ## 效果图
-![登录](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/login.png)
-![聊天](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/chat.png)
+![登录](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/static_files/login.png)
+![聊天](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/static_files/chat.png)

@@ -56,5 +56,5 @@ browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 2. auto login `auth.py`, thank you [https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth).
 
 ## Renderings
-![login](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/login.png)
-![chat](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/chat.png)
+![login](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/static_files/login.png)
+![chat](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/static_files/chat.png)
