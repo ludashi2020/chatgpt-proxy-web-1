@@ -9,12 +9,16 @@ monkey.patch_all()
 '''
 
 import os
+import sys
 import requests
 from hashlib import md5
-from auth import *
-from config import *
 from urllib.parse import unquote
 from werkzeug.routing import BaseConverter
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from auth import *
+from config import *
+
+listen_url = listen_url + ":" + str(listen_port) if listen_url.count(".") > 1 else listen_url
 
 user_headers = {}
 user_cookies = {}
