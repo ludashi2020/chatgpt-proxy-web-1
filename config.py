@@ -11,7 +11,7 @@ is_verify = False
 proxies = {"https": ""}
 
 # Plus专属Cookie参数，如果没有，找朋友蹭一个 [Plus-exclusive cookie parameters. If you don't have them, ask a friend to share theirs.]
-_puid = ""
+puid = ""
 
 '''
 1. 如果使用邮箱密码登录，则只需要填写email_address和password这两个参数 [If using email login, only the `email_address` and `password` require.]
