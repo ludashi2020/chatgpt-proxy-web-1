@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # 如果更改了此属性，需要手动删除资源目录 [If you change this property, the `resource` directory needs to be manually deleted.]
+# 如果你打算使用域名访问，listen_url直接设置 `https://域名链接` 即可，再nginx proxy_pass http://127.0.0.1:8011
 listen_url = "http://127.0.0.1"
 listen_port = 8011
 
