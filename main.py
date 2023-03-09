@@ -20,7 +20,7 @@ sys.path.append(current_dir)
 from auth import *
 from config import *
 
-listen_url = listen_url + ":" + str(listen_port) if listen_url.count(".") > 1 else listen_url
+listen_url = listen_url + ":" + str(listen_port) if listen_url[-2].isdigit() else listen_url
 
 user_headers = {}
 user_cookies = {}
@@ -171,7 +171,7 @@ def index(uri):
         return r.content.replace(b'https://chat.openai.com', listen_url.encode())
 
 if __name__ == "__main__":
-    host = '127.0.0.1' if listen_url.count(".") == 1 else listen_url.split("//")[-1].split(":")[0]
+    host = '127.0.0.1' if not listen_url[-2].isdigit() else listen_url.split("//")[-1].split(":")[0]
     app.run(host=host, port=listen_port, threaded=True)
     # WSGIServer((host, listen_port), app).serve_forever()
     # 在浏览器打开: http://127.0.0.1:8011/chat
