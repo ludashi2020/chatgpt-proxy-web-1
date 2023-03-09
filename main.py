@@ -10,6 +10,7 @@ monkey.patch_all()
 
 import os
 import sys
+import json
 import requests
 from hashlib import md5
 from urllib.parse import unquote
@@ -154,6 +155,9 @@ def index(uri):
             with open(filepath, 'wb') as f:
                 f.write(content)
             return send_file(filepath)
+    # 不显示历史会话
+    # elif 'conversations' in url:
+    #     return json.dumps({"items": [],"total": 0,"limit": 20,"offset": 0})
     # 流传输
     elif 'conversation' in url:
         # If a live conversation is requested, the response is streamed
