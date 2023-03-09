@@ -12,32 +12,9 @@ import os
 import requests
 from hashlib import md5
 from auth import *
+from config import *
 from urllib.parse import unquote
 from werkzeug.routing import BaseConverter
-
-# 如果需要，可以设置代理
-proxies = {"https": ""}
-
-# 必须要填写的plus账号专属的_puid参数，如果你没有，可以问朋友要啊，又没有一定要自己的^_^
-_puid = ""
-
-# 支持多用户同时使用，多用户时必须开启账号密码登录
-password_list = [
-    # 如果使用邮箱密码登录，只需填写`email_address`和`password`参数
-    # 如果使用Chrome或Microsoft登录，需要`session_token`
-    # 如果使用Chrome或Microsoft登录，又要开启账号密码登录的，需要重写user参数: user = md5(('your_email'+'your_password').encode()).hexdigest()
-    {"email_address": "", "password": "", "session_token": None, "user": None},
-]
-
-# 如果需要，listen_url可以更改
-# 如果更改此属性，则应还原resource目录
-listen_url = "http://127.0.0.1"
-listen_port = 8011
-
-listen_url = listen_url + ":" + str(listen_port) if listen_url.count(".") > 1 else listen_url
-
-# 如果需要，可以开启账号密码登录，设置: is_verify=True
-is_verify = False
 
 user_headers = {}
 user_cookies = {}
