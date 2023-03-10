@@ -50,6 +50,25 @@ python3 main.py
 
 browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 
+**If you need to access using a domain name, you can refer to my configuration.**
+
+`config.py`
+``` python
+listen_url = "https://cooolr.online"
+listen_port = 8011
+```
+
+`nginx.conf`
+```plain text
+server {
+    location / {
+        proxy_pass http://127.0.0.1:8011;
+    }
+}
+```
+
+
+
 ## Note
 
 1. It can only be used for Plus member accounts, free accounts without _puid parameters will have CF verification.
