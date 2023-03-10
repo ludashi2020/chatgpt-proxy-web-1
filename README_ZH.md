@@ -11,6 +11,8 @@ Flask 反向代理 ChatGPT 网站 chat.openai.com/chat。
 
 **该项目严重依赖于专用于 Plus 的 `_puid` 参数。 没有它，就无法绕过 CloudFlare。**
 
+修改 `config.py` 来设置配置
+
 ``` python
 # 如果更改了此属性，需要手动删除资源目录
 listen_url = "http://127.0.0.1"
