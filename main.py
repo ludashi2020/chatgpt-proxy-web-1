@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response
+from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response, render_template
 # Use gevent to speed up if needed.
 '''
 from gevent.pywsgi import WSGIServer
@@ -81,12 +81,6 @@ app.url_map.converters['regex'] = RegexConverter
 resource_dir = os.path.join(current_dir, 'resource')
 os.makedirs(resource_dir, exist_ok=True)
 
-# 预加载登录和登录失败页面
-with open(os.path.join(current_dir, 'static_files', 'login.html'), 'r', encoding='utf-8') as f:
-    login_html = f.read()
-with open(os.path.join(current_dir, 'static_files', 'login_failed.html'), 'r', encoding='utf-8') as f:
-    login_failed_html = f.read()
-
 # 登录认证
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -95,7 +89,7 @@ def login():
     if request.cookies.get("accessToken") in user_headers:
         return redirect('/chat',302)
     if request.method =='GET':
-        return login_html
+        return render_template('login.html', login_failed="")
     username = request.form['username']
     password = request.form['password']
     # user_id加密过程
@@ -105,7 +99,7 @@ def login():
         resp.set_cookie("accessToken", uid, max_age=604800)
         return resp
     else:
-        return login_failed_html
+        return render_template('login.html', login_failed="登录失败，请重试。")
 
 # handles all HTTP request methods
 @app.route('/<path:uri>', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'TRACE', 'CONNECT', 'PATCH'])

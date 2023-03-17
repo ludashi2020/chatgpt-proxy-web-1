@@ -15,8 +15,14 @@ Flask 反向代理 ChatGPT 网站 chat.openai.com/chat。
 
 ``` python
 # 如果更改了此属性，需要手动删除资源目录
-listen_url = "http://127.0.0.1"
-listen_port = 8011
+# 请配置具体的访问ip，而不是0.0.0.0，如果是vps，请配置vps的出口公网ip
+listen_addr = ("127.0.0.1", 8011)
+
+# 如果你打算使用域名访问，需要配置 `domain_url`，同时`listen_addr`公网可访问，如果是https，需要nginx配置proxy_pass `listen_addr`
+# 示例1: domain_url = "http://chatgpt.chat:8011"; listen_addr = ("8.8.8.8", 8011)
+# 示例2: domain_url = "http://chatgpt.chat"; listen_addr = ("8.8.8.8", 80)
+# 示例3: domain_url = "https://chatgpt.chat"; listen_addr = ("127.0.0.1", 8011); nginx `location / {proxy_pass http://127.0.0.1:8011}`
+domain_url = ""
 
 # 开启页面的账号密码认证
 is_verify = False
@@ -76,5 +82,5 @@ server {
 2. 自动登录部分 `auth.py` ,感谢[https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth)
 
 ## 效果图
-![登录](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/static_files/login.png)
-![聊天](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/static_files/chat.png)
+![登录](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/templates/login.png)
+![聊天](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/templates/chat.png)
