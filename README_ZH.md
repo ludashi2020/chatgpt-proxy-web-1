@@ -59,23 +59,6 @@ python3 main.py
 
 浏览器打开链接：[http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 
-**需要使用域名访问的朋友，可以参考我的配置**
-
-`config.py`
-``` python
-listen_url = "https://cooolr.online"
-listen_port = 8011
-```
-
-`nginx.conf`
-```plain text
-server {
-    location / {
-        proxy_pass http://127.0.0.1:8011;
-    }
-}
-```
-
 ## 注意
 
 1. 只能用于Plus会员账号，免费账号不带_puid参数会有CF验证
