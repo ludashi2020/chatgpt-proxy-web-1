@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
 # 如果更改了此属性，需要手动删除资源目录 [If you change this property, the `resource` directory needs to be manually deleted.]
-# 如果你打算使用域名访问，listen_url直接设置 `https://域名链接` 即可，再nginx proxy_pass http://127.0.0.1:8011
-listen_url = "http://127.0.0.1"
-listen_port = 8011
+listen_addr = ("127.0.0.1", 8011)
+
+# 如果你打算使用域名访问，需要配置 `domain_addr`，同时`listen_addr`公网可访问，如果是https，需要nginx配置proxy_pass `listen_addr` [If using a domain name, need to configure `domain_addr`, and `listen_addr` should be accessible from the public network. If it is an HTTPS service, need to configure nginx proxy_pass `listen_addr`.]
+# 示例example1: domain_addr = "http://chatgpt.chat:8011"; listen_addr = ("0.0.0.0", 8011)
+# 示例example2: domain_addr = "http://chatgpt.chat"; listen_addr = ("0.0.0.0", 80)
+# 示例example3: domain_addr = "https://chatgpt.chat"; listen_addr = ("127.0.0.1", 8011); nginx `location / {proxy_pass http://127.0.0.1:8011}`
+domain_addr = ""
 
 # 开启页面的账号密码认证 [Enable account and password authentication for the webpage.]
 is_verify = False
