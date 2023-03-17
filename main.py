@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response, render_template
-# Use gevent to speed up if needed.
+# Use gevent to speed up. need `pip install gevent`
 '''
 from gevent.pywsgi import WSGIServer
 from gevent import monkey
