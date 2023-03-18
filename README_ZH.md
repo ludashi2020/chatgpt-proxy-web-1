@@ -61,7 +61,7 @@ python3 main.py
 
 ## 注意
 
-1. 只能用于Plus会员账号，免费账号不带_puid参数会有CF验证
+1. 依赖于专用于 Plus 的 `_puid` 参数。 没有它，就无法绕过 CloudFlare。
 2. 自动登录部分 `auth.py` ,感谢[https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth)
 
 ## 效果图
