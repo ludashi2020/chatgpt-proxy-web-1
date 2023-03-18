@@ -116,8 +116,6 @@ def index(uri):
     # 开启尊贵的Plus标识
     if uri == 'backend-api/accounts/check':
         return json.dumps({"account_plan":{"is_paid_subscription_active":True,"subscription_plan":"chatgptplusplan","account_user_role":"account-owner","was_paid_customer":True,"has_customer_object":True,"subscription_expires_at_timestamp":int((datetime.now()-timedelta(days=31)).timestamp())},"user_country":"US","features":["system_message","model_switcher","model_preview"]})
-    if uri == 'backend-api/models':
-        return json.dumps({"models":[{"slug":"text-davinci-002-render-sha","max_tokens":4097,"title":"Default (GPT-3.5)","description":"Optimized for speed, currently available to Plus users","tags":[],"qualitative_properties":{"reasoning":[3,5],"speed":[5,5],"conciseness":[2,5]}},{"slug":"text-davinci-002-render-paid","max_tokens":4097,"title":"Legacy (GPT-3.5)","description":"The previous ChatGPT Plus model","tags":[],"qualitative_properties":{"reasoning":[3,5],"speed":[2,5],"conciseness":[1,5]}},{"slug":"gpt-4","max_tokens":4095,"title":"GPT-4","description":"Our most advanced model, available to Plus subscribers.\n\nGPT-4 excels at tasks that require advanced reasoning, complex instruction understanding, and more creativity.","tags":[],"qualitative_properties":{"reasoning":[5,5],"speed":[2,5],"conciseness":[4,5]}}]})
     param = '&'.join([f'{i}={j}' for i,j in request.args.items()])
     url = f"https://chat.openai.com/{uri}?{param}" if param else f"https://chat.openai.com/{uri}"
     uid = request.cookies.get("accessToken") if is_verify else user_id
