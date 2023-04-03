@@ -5,6 +5,10 @@ Flask 反向代理 ChatGPT 网站 chat.openai.com/chat。
 
 [中文](https://github.com/cooolr/chatgpt-proxy-web/blob/main/README_ZH.md) | [English](https://github.com/cooolr/chatgpt-proxy-web/blob/main/README.md)
 
+## 更新 2023-04-03
+
+ChatGPT调整了登录流程，必须手动获取 `session-token` 这一参数。
+
 ## 准备
 
 您应该登录 [ChatGPT 网站](https://chat.openai.com/chat)，找到名为 `_puid` 的 cookie，然后复制值。
