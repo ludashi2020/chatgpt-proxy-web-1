@@ -7,7 +7,8 @@ Flask 反向代理 ChatGPT 网站 chat.openai.com/chat。
 
 ## 更新 2023-04-03
 
-ChatGPT调整了登录流程，必须手动获取 `session-token` 这一参数。
+1. ChatGPT调整了登录流程，必须手动获取 `session-token` 这一参数。
+2. 不要填入 `email_address` 和 `password` 参数.
 
 ## 准备
 
