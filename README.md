@@ -5,7 +5,8 @@ Flask reverse proxy ChatGPT website chat.openai.com/chat.
 
 ## Update 2023-04-03 
 
-chatgpt adjusts the login process,now must manually obtain the 'session-token' parameter.
+1. chatgpt adjusts the login process,now must manually obtain the 'session-token' parameter.
+2. don't use `email_address` and `password` parameter.
 
 ## Prepare
 
