@@ -3,6 +3,10 @@ Flask reverse proxy ChatGPT website chat.openai.com/chat.
 
 [中文](https://github.com/cooolr/chatgpt-proxy-web/blob/main/README_ZH.md) | [English](https://github.com/cooolr/chatgpt-proxy-web/blob/main/README.md)
 
+## Update 2023-04-03 
+
+chatgpt adjusts the login process,now must manually obtain the 'session-token' parameter.
+
 ## Prepare
 
 You should log in to the [ChatGPT website](https://chat.openai.com/chat), find the cookie named `_puid`, and then copy its value.
